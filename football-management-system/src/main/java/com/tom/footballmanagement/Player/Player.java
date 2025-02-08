@@ -1,7 +1,6 @@
-package com.tom.footballmanagement;
+package com.tom.footballmanagement.Player;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Player {
     private long id;

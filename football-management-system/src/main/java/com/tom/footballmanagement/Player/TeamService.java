@@ -1,14 +1,12 @@
-package com.tom.footballmanagement;
+package com.tom.footballmanagement.Player;
 
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-import static com.tom.footballmanagement.Position.STRIKER;
+import static com.tom.footballmanagement.Player.Position.STRIKER;
 import static java.util.Calendar.DECEMBER;
 import static java.util.Calendar.JUNE;
 

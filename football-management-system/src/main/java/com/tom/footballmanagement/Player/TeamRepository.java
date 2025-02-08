@@ -1,4 +1,4 @@
-package com.tom.footballmanagement;
+package com.tom.footballmanagement.Player;
 
 import org.springframework.stereotype.Repository;
 
