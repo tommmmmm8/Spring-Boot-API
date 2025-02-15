@@ -1,4 +1,4 @@
-package com.tom.footballmanagement.Player;
+package com.tom.footballmanagement.Enum;
 
 public enum Position {
     GOALKEEPER,
