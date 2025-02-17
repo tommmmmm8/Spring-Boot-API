@@ -17,9 +17,10 @@ public class Team {
     private String name;
 
     private LocalDate founded_year;
+    private String stadium;
 
     @OneToOne
-    @JoinColumn(name = "coach_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "coach_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_team_id_fk"))
     private Coach coach;
 
     @Column(nullable = false)
@@ -28,12 +29,14 @@ public class Team {
     public Team(Long id,
                 String name,
                 LocalDate founded_year,
+                String stadium,
                 Coach coach,
                 String league,
                 List<Player> players) {
         this.id = id;
         this.name = name;
         this.founded_year = founded_year;
+        this.stadium = stadium;
         this.coach = coach;
         this.league = league;
     }
@@ -64,6 +67,14 @@ public class Team {
 
     public void setFounded_year(LocalDate foundedYear) {
         this.founded_year = foundedYear;
+    }
+
+    public String getStadium() {
+        return stadium;
+    }
+
+    public void setStadium(String stadium) {
+        this.stadium = stadium;
     }
 
     public Coach getCoach() {

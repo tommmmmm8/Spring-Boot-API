@@ -1,14 +1,15 @@
 package com.tom.footballmanagement.Service;
 
 import com.tom.footballmanagement.Entity.Player;
-import com.tom.footballmanagement.Enum.Position;
 import com.tom.footballmanagement.Repository.PlayerRepository;
-import com.tom.footballmanagement.Entity.Team;
+import com.tom.footballmanagement.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,12 @@ import static java.util.Calendar.JUNE;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final TeamRepository teamRepository;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository) {
         this.playerRepository = playerRepository;
+        this.teamRepository = teamRepository;
     }
 
     public List<Player> getAllPlayers() {
@@ -66,16 +69,25 @@ public class PlayerService {
         Player playerToModify = playerRepository.findById(id)
             .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
 
-        updates.forEach((key, value)-> {
-                switch (key) {
-                    case "firstName" -> playerToModify.setFirst_name((String) value);
-                    case "lastName" -> playerToModify.setLast_name((String) value);
-                    case "dateOfBirth" -> playerToModify.setDate_of_birth(LocalDate.parse((String) value));
-                    case "nationality" -> playerToModify.setNationality((String) value);
-                    case "position" -> playerToModify.setPosition((Position) value);
-                    case "team" -> playerToModify.setTeam((Team) value);
-                    case "contractEndDate" -> playerToModify.setContractEndDate((LocalDate) value);
+
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Player.class, key);
+            if (field != null) {
+                ReflectionUtils.makeAccessible(field);
+                if (key.equals("team")) {
+                    Map<?,?> map =  (Map<?,?>) value;
+                    if (map.containsKey("id") && map.get("id") != null)
+                        ReflectionUtils.setField(field, playerToModify, teamRepository.findById(Long.valueOf((Integer) map.get("id")))
+                                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with id: " + map.get("id") + " doesn't exist")));
+                    else if (map.containsKey("name") && map.get("name") != null) {
+                        ReflectionUtils.setField(field, playerToModify, teamRepository.findByName(map.get("name").toString()));
+                    }
+                } else {
+                    ReflectionUtils.setField(field, playerToModify, value);
                 }
+            } else {
+                System.out.println("Unable to do partial update field/property: " + key);
+            }
         });
         return playerRepository.save(playerToModify);
     }
@@ -92,9 +104,5 @@ public class PlayerService {
                 LocalDate.of(2029, JUNE, 30)
         );
         return playerRepository.save(player);
-    }
-
-    public Player addPlayerToTeam(Long teamId) {
-        return null;
     }
 }

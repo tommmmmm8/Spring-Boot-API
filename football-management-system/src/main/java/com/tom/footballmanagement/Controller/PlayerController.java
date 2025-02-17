@@ -2,9 +2,11 @@ package com.tom.footballmanagement.Controller;
 
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Service.PlayerService;
+import com.tom.footballmanagement.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -13,8 +15,13 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @Autowired
-    public PlayerController(PlayerService playerService) {
+    public PlayerController(PlayerService playerService, TeamService teamService) {
         this.playerService = playerService;
+    }
+
+    @GetMapping("/players")
+    public List<Player> getAllPlayers() {
+        return playerService.getAllPlayers();
     }
 
     // Get a player by id
@@ -45,11 +52,5 @@ public class PlayerController {
     @DeleteMapping("/players/{id}")
     public String deletePlayer(@PathVariable Long id) {
         return playerService.deletePlayer(id);
-    }
-
-    // Add a player to a specific team
-    @PostMapping("/{team_id}/players")
-    public Player addPlayerToTeam(@PathVariable Long team_id) {
-        return playerService.addPlayerToTeam(team_id);
     }
 }

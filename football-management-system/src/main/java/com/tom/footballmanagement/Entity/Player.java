@@ -34,7 +34,7 @@ public class Player {
     private Team team;
 
     @Column
-    private LocalDate contractEndDate;
+    private LocalDate contract_end_date;
 
     public Player(Long id,
                   String first_name,
@@ -43,7 +43,7 @@ public class Player {
                   String nationality,
                   Position position,
                   Team team,
-                  LocalDate contractEndDate) {
+                  LocalDate contract_end_date) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -51,7 +51,7 @@ public class Player {
         this.nationality = nationality;
         this.position = position;
         this.team = team;
-        this.contractEndDate = contractEndDate;
+        this.contract_end_date = contract_end_date;
     }
 
     public Player() {
@@ -114,12 +114,12 @@ public class Player {
         this.team = team;
     }
 
-    public LocalDate getContractEndDate() {
-        return contractEndDate;
+    public LocalDate getContract_end_date() {
+        return contract_end_date;
     }
 
-    public void setContractEndDate(LocalDate contractEndDate) {
-        this.contractEndDate = contractEndDate;
+    public void setContract_end_date(LocalDate contract_end_date) {
+        this.contract_end_date = contract_end_date;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Player {
                 ", nationality='" + nationality + '\'' +
                 ", position='" + position + '\'' +
                 ", team='" + team + '\'' +
-                ", contractEndDate=" + contractEndDate +
+                ", contract_end_date=" + contract_end_date +
                 '}';
     }
 }

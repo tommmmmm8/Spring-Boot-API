@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -25,6 +28,14 @@ public class TeamService {
         this.playerRepository = playerRepository;
     }
 
+    public boolean teamExists(Long team_id) {
+        return teamRepository.existsById(team_id);
+    }
+
+    public List<Team> getAllTeams() {
+        return teamRepository.findAll();
+    }
+
     public List<Player> getPlayersByTeam(Long team_id) {
         Team team = teamRepository.findById(team_id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team does not exist"));
@@ -33,7 +44,26 @@ public class TeamService {
     }
 
     public Team addTeam(Team team) {
+        if (team.getId() != null)
+            if (teamExists(team.getId()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team: " + team.getName() + " already exists");
         return teamRepository.save(team);
+    }
+
+    public Team modifyTeam(Long team_id, Map<String, Object> updates) {
+        Team team = teamRepository.findById(team_id)
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        updates.forEach( (key, value) -> {
+            Field field = ReflectionUtils.findField(Team.class, key);
+            if (field != null) {
+                ReflectionUtils.makeAccessible(field);
+                ReflectionUtils.setField(field, team, value);
+            } else {
+                System.out.println("Unable to do partial update field/property: " + key);
+            }
+        });
+        return team;
     }
 
     public String removeTeam(Long team_id) {
@@ -45,9 +75,5 @@ public class TeamService {
 
         teamRepository.deleteById(team_id);
         return String.format("Team with id: %d was deleted", team_id);
-    }
-
-    public String removePlayerFromTeam(Long teamId, Long playerId) {
-        return null;
     }
 }
