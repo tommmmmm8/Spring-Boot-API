@@ -1,6 +1,8 @@
 package com.tom.footballmanagement.Service;
 
+import com.tom.footballmanagement.Entity.Coach;
 import com.tom.footballmanagement.Entity.Player;
+import com.tom.footballmanagement.Repository.CoachRepository;
 import com.tom.footballmanagement.Repository.PlayerRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
 import com.tom.footballmanagement.Entity.Team;
@@ -21,11 +23,13 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
+    private final CoachRepository coachRepository;
 
     @Autowired
-    public TeamService(TeamRepository teamRepository, PlayerRepository playerRepository) {
+    public TeamService(TeamRepository teamRepository, PlayerRepository playerRepository, CoachRepository coachRepository) {
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
+        this.coachRepository = coachRepository;
     }
 
     public boolean teamExists(Long team_id) {
@@ -38,9 +42,14 @@ public class TeamService {
 
     public List<Player> getPlayersByTeam(Long team_id) {
         Team team = teamRepository.findById(team_id)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team does not exist"));
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
         return playerRepository.getPlayersByTeam(team);
+    }
+
+    public Team getTeamById(Long teamId) {
+        return teamRepository.findById(teamId)
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
     }
 
     public Team addTeam(Team team) {
@@ -58,7 +67,18 @@ public class TeamService {
             Field field = ReflectionUtils.findField(Team.class, key);
             if (field != null) {
                 ReflectionUtils.makeAccessible(field);
-                ReflectionUtils.setField(field, team, value);
+                if (key.equals("coach")) {
+                    Map<?,?> map = (Map<?, ?>) value;
+                    if (map != null) {
+                        if (map.containsKey("id") && map.get("id") != null) {
+                            team.setCoach(coachRepository.findById(Long.valueOf((Integer) map.get("id")))
+                                    .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach with id: " + map.get("id") + " not found")));
+                        }
+//
+                    } else
+                        team.setCoach(null);
+                } else
+                    ReflectionUtils.setField(field, team, value);
             } else {
                 System.out.println("Unable to do partial update field/property: " + key);
             }

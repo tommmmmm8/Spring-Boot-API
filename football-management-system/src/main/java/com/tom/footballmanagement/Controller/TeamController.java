@@ -30,6 +30,11 @@ public class TeamController {
         return teamService.getPlayersByTeam(team_id);
     }
 
+    @GetMapping("/{team_id}")
+    public Team getTeamById(@PathVariable Long team_id) {
+        return teamService.getTeamById(team_id);
+    }
+
     // Add a team
     @PostMapping
     public Team addTeam(@RequestBody Team team) {
@@ -37,7 +42,7 @@ public class TeamController {
     }
 
     // Modify a team
-    @PatchMapping("{team_id}")
+    @PatchMapping("/{team_id}")
     public Team modifyTeam(@PathVariable Long team_id, @RequestBody Map<String, Object> updates) { return teamService.modifyTeam(team_id, updates); }
 
     // Remove a team

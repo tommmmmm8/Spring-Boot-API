@@ -52,7 +52,7 @@ public class PlayerService {
         return playerRepository.save(player);
     }
 
-    public String deletePlayer(Long id) {
+    public String removePlayer(Long id) {
         if (!playerRepository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
 
@@ -76,12 +76,15 @@ public class PlayerService {
                 ReflectionUtils.makeAccessible(field);
                 if (key.equals("team")) {
                     Map<?,?> map =  (Map<?,?>) value;
-                    if (map.containsKey("id") && map.get("id") != null)
-                        ReflectionUtils.setField(field, playerToModify, teamRepository.findById(Long.valueOf((Integer) map.get("id")))
-                                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with id: " + map.get("id") + " doesn't exist")));
-                    else if (map.containsKey("name") && map.get("name") != null) {
-                        ReflectionUtils.setField(field, playerToModify, teamRepository.findByName(map.get("name").toString()));
-                    }
+                    if (map != null) {
+                        if (map.containsKey("id") && map.get("id") != null)
+                            ReflectionUtils.setField(field, playerToModify, teamRepository.findById(Long.valueOf((Integer) map.get("id")))
+                                    .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with id: " + map.get("id") + " doesn't exist")));
+                        else if (map.containsKey("name") && map.get("name") != null)
+                            ReflectionUtils.setField(field, playerToModify, teamRepository.findByName(map.get("name").toString()));
+                    } else
+                        playerToModify.setTeam(null);
+
                 } else {
                     ReflectionUtils.setField(field, playerToModify, value);
                 }

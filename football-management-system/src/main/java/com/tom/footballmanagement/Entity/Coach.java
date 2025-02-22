@@ -1,6 +1,10 @@
 package com.tom.footballmanagement.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tom.footballmanagement.Repository.TeamRepository;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -23,6 +27,7 @@ public class Coach {
 
     @OneToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id", unique = true)
+    @JsonBackReference // Child/inverse side
     private Team team;
 
     public Coach(Long id,
@@ -39,7 +44,10 @@ public class Coach {
         this.team = team;
     }
 
-    public Coach() {
+    public Coach () {}
+
+    public Coach(Coach that) {
+        this(that.getId(), that.getFirst_name(), that.getFirst_name(), that.getDate_of_birth(), that.getNationality(), that.getTeam());
     }
 
     public Long getId() {
@@ -87,7 +95,37 @@ public class Coach {
     }
 
     public void setTeam(Team team) {
+        System.out.println("---- setTeam called ----");
+        System.out.println("Current team: " + (this.team != null ? this.team.getId() : "null"));
+        System.out.println("New team: " + (team != null ? team.getId() : "null"));
+        if (this.team == team)
+            return;
+
+        if (team != null) {
+            if (team.getCoach() != null && team.getCoach() != this) {
+                System.out.println("The team already has a coach");
+                return;
+            }
+        }
+
+        Team oldTeam = this.team;
+
         this.team = team;
+        System.out.println("New team assigned to coach.");
+
+        if (this.team != null && this.team.getCoach() != this) { // If the new team is not null and the new team's coach is not this coach yet
+            this.team.setCoach(this);
+            System.out.println("Updating new team's coach reference.");
+        }
+
+        if (oldTeam != null) { // If the old team still has this coach assigned, we're gonna set it to null
+            if (oldTeam.getCoach() == this) {
+                oldTeam.setCoach(null);
+                System.out.println(oldTeam.getName() + " no longer has " + this.getFirst_name() + " " + this.getLast_name() + " as a coach");
+                //System.out.println("Removing old coach " + this.getFirst_name() + " " + this.getLast_name() + " from this team.");
+            }
+        }
+        System.out.println("---- setTeam completed ----");
     }
 
     @Override
