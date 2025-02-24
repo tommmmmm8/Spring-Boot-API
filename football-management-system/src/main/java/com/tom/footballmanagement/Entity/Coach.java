@@ -1,10 +1,8 @@
 package com.tom.footballmanagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tom.footballmanagement.Repository.TeamRepository;
+import com.tom.footballmanagement.DTO.CoachResponseDTO;
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
@@ -139,5 +137,15 @@ public class Coach extends BaseEntity {
                 ", nationality='" + nationality + '\'' +
                 ", team=" + team +
                 '}';
+    }
+
+    public CoachResponseDTO toResponseDTO() {
+        return new CoachResponseDTO(
+                this.getId(),
+                this.getFirst_name(),
+                this.getLast_name(),
+                this.getDate_of_birth(),
+                this.getNationality(),
+                this.getTeam() != null ? this.getTeam().getId() : null);
     }
 }

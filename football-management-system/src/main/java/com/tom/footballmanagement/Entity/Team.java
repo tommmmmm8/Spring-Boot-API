@@ -1,12 +1,11 @@
 package com.tom.footballmanagement.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.tom.footballmanagement.DTO.CoachResponseDTO;
+import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "teams")
@@ -136,8 +135,20 @@ public class Team extends BaseEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", founded_year=" + founded_year +
-                ", coach='" + coach + '\'' +
+                ", stadium='" + stadium + '\'' +
+                ", coach=" + coach +
                 ", league='" + league + '\'' +
                 '}';
+    }
+
+    public TeamResponseDTO toResponseDTO(Team team) {
+        return new TeamResponseDTO(
+                team.getId(),
+                team.getName(),
+                team.getFounded_year(),
+                team.getStadium(),
+                team.getCoach() != null ? team.getCoach().toResponseDTO() : null, // if the coach isn't null get the coach and convert it to response DTO otherwise return null
+                team.getLeague()
+        );
     }
 }
