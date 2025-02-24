@@ -1,15 +1,12 @@
 package com.tom.footballmanagement.Controller;
 
+import com.tom.footballmanagement.DTO.CoachResponseDTO;
 import com.tom.footballmanagement.Entity.Coach;
 import com.tom.footballmanagement.Service.CoachService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,22 +21,22 @@ public class CoachController {
     }
 
     @GetMapping("/coaches")
-    public List<Coach> getAllCoaches() {
+    public List<CoachResponseDTO> getAllCoaches() {
         return coachService.getAllCoaches();
     }
 
     @GetMapping("/coaches/{id}")
-    public Coach getCoach(@PathVariable Long id) {
+    public CoachResponseDTO getCoach(@PathVariable Long id) {
         return coachService.getCoach(id);
     }
 
     @PostMapping("/coaches")
-    public Coach addCoach(@RequestBody Coach coach) {
+    public CoachResponseDTO addCoach(@RequestBody Coach coach) {
         return coachService.addCoach(coach);
     }
 
     @PatchMapping("/coaches/{id}")
-    public Coach modifyCoach(@PathVariable Long id,@RequestBody Map<String, Object> updates) {
+    public CoachResponseDTO modifyCoach(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return coachService.modifyCoach(id, updates);
     }
 

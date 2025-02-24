@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Entity;
 
+import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Enum.Position;
 import jakarta.persistence.*;
 
@@ -134,6 +135,19 @@ public class Player extends BaseEntity {
                 ", team='" + team + '\'' +
                 ", contract_end_date=" + contract_end_date +
                 '}';
+    }
+
+    public PlayerResponseDTO toResponseDTO() {
+        return new PlayerResponseDTO(
+                this.id,
+                this.first_name,
+                this.last_name,
+                this.date_of_birth,
+                this.nationality,
+                this.position,
+                this.team != null ? this.team.toResponseDTO() : null,
+                this.contract_end_date
+        );
     }
 }
 

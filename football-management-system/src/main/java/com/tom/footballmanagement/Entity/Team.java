@@ -141,14 +141,14 @@ public class Team extends BaseEntity {
                 '}';
     }
 
-    public TeamResponseDTO toResponseDTO(Team team) {
+    public TeamResponseDTO toResponseDTO() {
         return new TeamResponseDTO(
-                team.getId(),
-                team.getName(),
-                team.getFounded_year(),
-                team.getStadium(),
-                team.getCoach() != null ? team.getCoach().toResponseDTO() : null, // if the coach isn't null get the coach and convert it to response DTO otherwise return null
-                team.getLeague()
+                this.id,
+                this.name,
+                this.founded_year,
+                this.stadium,
+                this.coach != null ? this.coach.toResponseDTO() : null, // if the coach isn't null get the coach and convert it to response DTO otherwise return null
+                this.league
         );
     }
 }

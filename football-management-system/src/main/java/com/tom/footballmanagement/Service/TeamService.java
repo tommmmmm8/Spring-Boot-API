@@ -1,6 +1,7 @@
 package com.tom.footballmanagement.Service;
 
-import com.tom.footballmanagement.Entity.Coach;
+import com.tom.footballmanagement.DTO.PlayerResponseDTO;
+import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Repository.CoachRepository;
 import com.tom.footballmanagement.Repository.PlayerRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,30 +39,33 @@ public class TeamService {
         return teamRepository.existsById(team_id);
     }
 
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
+    public List<TeamResponseDTO> getAllTeams() {
+        return teamRepository.findAll().stream().map(Team::toResponseDTO).toList();
     }
 
-    public List<Player> getPlayersByTeam(Long team_id) {
+    public List<PlayerResponseDTO> getPlayersByTeam(Long team_id) {
         Team team = teamRepository.findById(team_id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
-        return playerRepository.getPlayersByTeam(team);
+        return playerRepository.getPlayersByTeam(team).stream().map(Player::toResponseDTO).toList();
     }
 
-    public Team getTeamById(Long teamId) {
-        return teamRepository.findById(teamId)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+    public TeamResponseDTO getTeamById(Long teamId) {
+        Optional<Team> team = teamRepository.findById(teamId);
+        if (team.isPresent())
+            return team.get().toResponseDTO();
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
     }
 
-    public Team addTeam(Team team) {
+    public TeamResponseDTO addTeam(Team team) {
         if (team.getId() != null)
             if (teamExists(team.getId()))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team: " + team.getName() + " already exists");
-        return teamRepository.save(team);
+        return teamRepository.save(team).toResponseDTO();
     }
 
-    public Team modifyTeam(Long team_id, Map<String, Object> updates) {
+    public TeamResponseDTO modifyTeam(Long team_id, Map<String, Object> updates) {
         Team team = teamRepository.findById(team_id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
@@ -83,7 +88,7 @@ public class TeamService {
                 System.out.println("Unable to do partial update field/property: " + key);
             }
         });
-        return team;
+        return team.toResponseDTO();
     }
 
     public ResponseEntity<String> removeTeam(Long team_id) {

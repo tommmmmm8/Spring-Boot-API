@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Controller;
 
+import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Service.PlayerService;
 import com.tom.footballmanagement.Service.TeamService;
@@ -21,31 +22,31 @@ public class PlayerController {
     }
 
     @GetMapping("/players")
-    public List<Player> getAllPlayers() {
+    public List<PlayerResponseDTO> getAllPlayers() {
         return playerService.getAllPlayers();
     }
 
     // Get a player by id
     @GetMapping("/players/{id}")
-    public Player getPlayer(@PathVariable Long id) {
+    public PlayerResponseDTO getPlayer(@PathVariable Long id) {
         return playerService.getPlayer(id);
     }
 
     // Add a player
     @PostMapping("/players")
-    public Player addPlayer(@RequestBody Player player) {
+    public PlayerResponseDTO addPlayer(@RequestBody Player player) {
         return playerService.addPlayer(player);
     }
 
     // Add mbappe
     @PostMapping("/players/mbappe")
-    public Player addMbappe() {
+    public PlayerResponseDTO addMbappe() {
         return playerService.addMbappe();
     }
 
     // Modify a specific player
     @PatchMapping("/players/{id}")
-    public Player modifyPlayer(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public PlayerResponseDTO modifyPlayer(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return playerService.modifyPlayer(id, updates);
     }
 

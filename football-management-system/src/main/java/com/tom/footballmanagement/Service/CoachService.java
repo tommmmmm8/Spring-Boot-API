@@ -1,7 +1,7 @@
 package com.tom.footballmanagement.Service;
 
+import com.tom.footballmanagement.DTO.CoachResponseDTO;
 import com.tom.footballmanagement.Entity.Coach;
-import com.tom.footballmanagement.Entity.Team;
 import com.tom.footballmanagement.Repository.CoachRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,34 +29,27 @@ public class CoachService {
         this.teamRepository = teamRepository;
     }
 
-    public List<Coach> getAllCoaches() {
-        return coachRepository.findAll();
+    public List<CoachResponseDTO> getAllCoaches() {
+        return coachRepository.findAll().stream().map(Coach::toResponseDTO).toList();
     }
 
-    public Coach getCoach(Long id) {
-        return coachRepository.findById(id)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
+    public CoachResponseDTO getCoach(Long id) {
+        Optional<Coach> coach = coachRepository.findById(id);
+        if (coach.isPresent())
+            return coach.get().toResponseDTO();
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found");
     }
 
-    public Coach addCoach(Coach coach) {
+    public CoachResponseDTO addCoach(Coach coach) {
         if (coach.getId() != null)
             if (coachRepository.existsById(coach.getId()))
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Coach with id: " + coach.getId() + " already exists");
 
-        return coachRepository.save(coach);
+        return coachRepository.save(coach).toResponseDTO();
     }
 
-    public ResponseEntity<String> removeCoach(Long id) {
-        Coach coach = coachRepository.findById(id)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
-
-        teamRepository.findBycoach(coach).forEach(team -> team.setCoach(null));
-
-        coachRepository.deleteById(id);
-        return ResponseEntity.ok(String.format("Coach with id: %d was deleted", id));
-    }
-
-    public Coach modifyCoach(Long id, Map<String, Object> updates) {
+    public CoachResponseDTO modifyCoach(Long id, Map<String, Object> updates) {
         Coach coach = coachRepository.findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
 
@@ -81,6 +75,16 @@ public class CoachService {
                 System.out.println("Unable to do partial update field/property: " + key);
             }
         });
-        return coachRepository.save(coach);
+        return coachRepository.save(coach).toResponseDTO();
+    }
+
+    public ResponseEntity<String> removeCoach(Long id) {
+        Coach coach = coachRepository.findById(id)
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
+
+        teamRepository.findBycoach(coach).forEach(team -> team.setCoach(null));
+
+        coachRepository.deleteById(id);
+        return ResponseEntity.ok(String.format("Coach with id: %d was deleted", id));
     }
 }

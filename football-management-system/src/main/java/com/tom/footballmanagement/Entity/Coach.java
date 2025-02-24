@@ -141,11 +141,11 @@ public class Coach extends BaseEntity {
 
     public CoachResponseDTO toResponseDTO() {
         return new CoachResponseDTO(
-                this.getId(),
-                this.getFirst_name(),
-                this.getLast_name(),
-                this.getDate_of_birth(),
-                this.getNationality(),
-                this.getTeam() != null ? this.getTeam().getId() : null);
+                this.id,
+                this.first_name,
+                this.last_name,
+                this.date_of_birth,
+                this.nationality,
+                this.team != null ? this.team.getId() : null);
     }
 }
