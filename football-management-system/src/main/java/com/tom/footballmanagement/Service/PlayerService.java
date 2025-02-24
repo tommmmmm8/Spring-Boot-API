@@ -5,6 +5,7 @@ import com.tom.footballmanagement.Repository.PlayerRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,13 +35,24 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-//    public ResponseEntity<Void> playerExists(Long id) {
-//        boolean exists = playerRepository.existsById(id);
-//        if (exists)
-//            return ResponseEntity.noContent().build(); // 204 No Content
-//        else
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
-//    }
+    public Player getPlayer(Long id) {
+        return playerRepository.findById(id)
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
+    }
+
+    public Player addMbappe() {
+        Player player = new Player(
+                null,
+                "Kylian",
+                "Mbappe",
+                LocalDate.of(1998, DECEMBER, 20),
+                "French",
+                STRIKER,
+                null,
+                LocalDate.of(2029, JUNE, 30)
+        );
+        return playerRepository.save(player);
+    }
 
     public Player addPlayer(Player player){
         // checking if the id was specified in the json but already exists in the table
@@ -50,19 +62,6 @@ public class PlayerService {
 
         System.out.println("Player was saved");
         return playerRepository.save(player);
-    }
-
-    public String removePlayer(Long id) {
-        if (!playerRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
-
-        playerRepository.deleteById(id);
-        return String.format("Player with id: %d was deleted", id);
-    }
-
-    public Player getPlayer(Long id) {
-        return playerRepository.findById(id)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
     }
 
     public Player modifyPlayer(Long id, Map<String, Object> updates) {
@@ -95,17 +94,11 @@ public class PlayerService {
         return playerRepository.save(playerToModify);
     }
 
-    public Player addMbappe() {
-        Player player = new Player(
-                null,
-                "Kylian",
-                "Mbappe",
-                LocalDate.of(1998, DECEMBER, 20),
-                "French",
-                STRIKER,
-                null,
-                LocalDate.of(2029, JUNE, 30)
-        );
-        return playerRepository.save(player);
+    public ResponseEntity<String> removePlayer(Long id) {
+        if (!playerRepository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
+
+        playerRepository.deleteById(id);
+        return ResponseEntity.ok(String.format("Player with id: %d was deleted", id));
     }
 }

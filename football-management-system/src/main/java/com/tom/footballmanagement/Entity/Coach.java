@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "coaches")
-public class Coach {
+public class Coach extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -115,11 +115,12 @@ public class Coach {
 
         if (this.team != null && this.team.getCoach() != this) { // If the new team is not null and the new team's coach is not this coach yet
             this.team.setCoach(this);
-            System.out.println("Updating new team's coach reference.");
+            System.out.println("Updated new team's coach reference.");
         }
 
         if (oldTeam != null) { // If the old team still has this coach assigned, we're gonna set it to null
             if (oldTeam.getCoach() == this) {
+                System.out.println("oldTeam object id: " + oldTeam.getId());
                 oldTeam.setCoach(null);
                 System.out.println(oldTeam.getName() + " no longer has " + this.getFirst_name() + " " + this.getLast_name() + " as a coach");
                 //System.out.println("Removing old coach " + this.getFirst_name() + " " + this.getLast_name() + " from this team.");

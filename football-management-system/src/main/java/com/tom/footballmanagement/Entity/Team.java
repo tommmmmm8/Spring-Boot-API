@@ -2,6 +2,7 @@ package com.tom.footballmanagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "teams")
-public class Team {
+public class Team extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -107,11 +108,12 @@ public class Team {
 
         if (this.coach != null && this.coach.getTeam() != this) { // If the new coach is not null and the new coach's team is not this team yet
             this.coach.setTeam(this);
-            System.out.println("Updating new coach's team reference.");
+            System.out.println("Updated new coach's team reference.");
         }
 
         if (oldCoach != null) { // The old coach still has this team assigned, we're gonna set it to null
             if (oldCoach.getTeam() == this) {
+                System.out.println("oldCoach object id: " + oldCoach.getId());
                 oldCoach.setTeam(null);
                 System.out.println(oldCoach.getFirst_name() + " " + oldCoach.getLast_name() + " no longer has " + this.getName() + " as a team");
                 //System.out.println("Removing old coach " + oldCoach.getFirst_name() + " " + oldCoach.getLast_name() + " from this team.");

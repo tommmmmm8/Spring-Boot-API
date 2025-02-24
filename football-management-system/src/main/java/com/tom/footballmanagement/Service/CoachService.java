@@ -6,6 +6,7 @@ import com.tom.footballmanagement.Repository.CoachRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -44,14 +45,14 @@ public class CoachService {
         return coachRepository.save(coach);
     }
 
-    public String removeCoach(Long id) {
+    public ResponseEntity<String> removeCoach(Long id) {
         Coach coach = coachRepository.findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
 
         teamRepository.findBycoach(coach).forEach(team -> team.setCoach(null));
 
         coachRepository.deleteById(id);
-        return String.format("Coach with id: %d was deleted", id);
+        return ResponseEntity.ok(String.format("Coach with id: %d was deleted", id));
     }
 
     public Coach modifyCoach(Long id, Map<String, Object> updates) {

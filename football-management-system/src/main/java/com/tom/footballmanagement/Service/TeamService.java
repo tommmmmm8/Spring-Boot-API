@@ -8,6 +8,7 @@ import com.tom.footballmanagement.Repository.TeamRepository;
 import com.tom.footballmanagement.Entity.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -74,7 +75,6 @@ public class TeamService {
                             team.setCoach(coachRepository.findById(Long.valueOf((Integer) map.get("id")))
                                     .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach with id: " + map.get("id") + " not found")));
                         }
-//
                     } else
                         team.setCoach(null);
                 } else
@@ -86,7 +86,7 @@ public class TeamService {
         return team;
     }
 
-    public String removeTeam(Long team_id) {
+    public ResponseEntity<String> removeTeam(Long team_id) {
         Team team = teamRepository.findById(team_id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
@@ -94,6 +94,6 @@ public class TeamService {
         playerRepository.getPlayersByTeam(team).forEach( player -> player.setTeam(null));
 
         teamRepository.deleteById(team_id);
-        return String.format("Team with id: %d was deleted", team_id);
+        return ResponseEntity.ok(String.format("Team with id: %d was deleted", team_id));
     }
 }

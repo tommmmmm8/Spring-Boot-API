@@ -4,6 +4,7 @@ import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Entity.Team;
 import com.tom.footballmanagement.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class TeamController {
 
     // Remove a team
     @DeleteMapping("/{team_id}")
-    public String removeTeam(@PathVariable Long team_id) {
+    public ResponseEntity<String> removeTeam(@PathVariable Long team_id) {
         return teamService.removeTeam(team_id);
     }
 }
