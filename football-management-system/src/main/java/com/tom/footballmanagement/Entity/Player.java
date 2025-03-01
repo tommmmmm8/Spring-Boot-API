@@ -145,7 +145,7 @@ public class Player extends BaseEntity {
                 this.date_of_birth,
                 this.nationality,
                 this.position,
-                this.team != null ? this.team.toResponseDTO() : null,
+                this.team != null ? this.team.getName() : null,
                 this.contract_end_date
         );
     }

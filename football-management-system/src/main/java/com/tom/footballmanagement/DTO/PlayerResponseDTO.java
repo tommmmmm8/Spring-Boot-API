@@ -11,7 +11,7 @@ public record PlayerResponseDTO(
         LocalDate date_of_birth,
         String nationality,
         Position position,
-        TeamResponseDTO teamResponseDTO,
+        String team,
         LocalDate contract_end_date
 ) {
 }

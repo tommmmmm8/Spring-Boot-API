@@ -8,6 +8,6 @@ public record TeamResponseDTO(Long team_id,
                               String name,
                               LocalDate founded_year,
                               String stadium,
-                              CoachResponseDTO coach,
+                              String manager,
                               String league) {
 }

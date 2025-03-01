@@ -1,14 +1,14 @@
 package com.tom.footballmanagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.tom.footballmanagement.DTO.CoachResponseDTO;
+import com.tom.footballmanagement.DTO.ManagerResponseDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "coaches")
-public class Coach extends BaseEntity {
+@Table(name = "managers")
+public class Manager extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +28,12 @@ public class Coach extends BaseEntity {
     @JsonBackReference // Child/inverse side
     private Team team;
 
-    public Coach(Long id,
-                 String first_name,
-                 String last_name,
-                 LocalDate date_of_birth,
-                 String nationality,
-                 Team team) {
+    public Manager(Long id,
+                   String first_name,
+                   String last_name,
+                   LocalDate date_of_birth,
+                   String nationality,
+                   Team team) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -42,9 +42,9 @@ public class Coach extends BaseEntity {
         this.team = team;
     }
 
-    public Coach () {}
+    public Manager() {}
 
-    public Coach(Coach that) {
+    public Manager(Manager that) {
         this(that.getId(), that.getFirst_name(), that.getFirst_name(), that.getDate_of_birth(), that.getNationality(), that.getTeam());
     }
 
@@ -129,7 +129,7 @@ public class Coach extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Coach{" +
+        return "Manager{" +
                 "id=" + id +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
@@ -139,13 +139,13 @@ public class Coach extends BaseEntity {
                 '}';
     }
 
-    public CoachResponseDTO toResponseDTO() {
-        return new CoachResponseDTO(
+    public ManagerResponseDTO toResponseDTO() {
+        return new ManagerResponseDTO(
                 this.id,
                 this.first_name,
                 this.last_name,
                 this.date_of_birth,
                 this.nationality,
-                this.team != null ? this.team.getId() : null);
+                this.team != null ? this.team.getName() : null);
     }
 }

@@ -1,7 +1,6 @@
 package com.tom.footballmanagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.tom.footballmanagement.DTO.CoachResponseDTO;
 import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import jakarta.persistence.*;
 
@@ -24,7 +23,7 @@ public class Team extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_team_id_fk"))
     @JsonManagedReference // Parent/owner side
-    private Coach coach;
+    private Manager manager;
 
     @Column(nullable = false)
     private String league;
@@ -33,13 +32,13 @@ public class Team extends BaseEntity {
                 String name,
                 LocalDate founded_year,
                 String stadium,
-                Coach coach,
+                Manager manager,
                 String league) {
         this.id = id;
         this.name = name;
         this.founded_year = founded_year;
         this.stadium = stadium;
-        this.coach = coach;
+        this.manager = manager;
         this.league = league;
     }
 
@@ -82,40 +81,40 @@ public class Team extends BaseEntity {
         this.stadium = stadium;
     }
 
-    public Coach getCoach() {
-        return coach;
+    public Manager getCoach() {
+        return manager;
     }
 
-    public void setCoach(Coach coach) {
+    public void setCoach(Manager manager) {
         System.out.println("---- setCoach called ----");
-        System.out.println("Current coach: " + (this.coach != null ? this.coach.getId() : "null"));
-        System.out.println("New coach: " + (coach != null ? coach.getId() : "null"));
-        if (this.coach == coach)
+        System.out.println("Current manager: " + (this.manager != null ? this.manager.getId() : "null"));
+        System.out.println("New manager: " + (manager != null ? manager.getId() : "null"));
+        if (this.manager == manager)
             return;
 
-        if (coach != null) {
-            if (coach.getTeam() != null && coach.getTeam() != this) {
-                System.out.println("Coach is assigned to a different team");
+        if (manager != null) {
+            if (manager.getTeam() != null && manager.getTeam() != this) {
+                System.out.println("Manager is assigned to a different team");
                 return;
             }
         }
 
-        Coach oldCoach = this.coach;
+        Manager oldManager = this.manager;
 
-        this.coach = coach;
-        System.out.println("New coach assigned to team.");
+        this.manager = manager;
+        System.out.println("New manager assigned to team.");
 
-        if (this.coach != null && this.coach.getTeam() != this) { // If the new coach is not null and the new coach's team is not this team yet
-            this.coach.setTeam(this);
-            System.out.println("Updated new coach's team reference.");
+        if (this.manager != null && this.manager.getTeam() != this) { // If the new manager is not null and the new manager's team is not this team yet
+            this.manager.setTeam(this);
+            System.out.println("Updated new manager's team reference.");
         }
 
-        if (oldCoach != null) { // The old coach still has this team assigned, we're gonna set it to null
-            if (oldCoach.getTeam() == this) {
-                System.out.println("oldCoach object id: " + oldCoach.getId());
-                oldCoach.setTeam(null);
-                System.out.println(oldCoach.getFirst_name() + " " + oldCoach.getLast_name() + " no longer has " + this.getName() + " as a team");
-                //System.out.println("Removing old coach " + oldCoach.getFirst_name() + " " + oldCoach.getLast_name() + " from this team.");
+        if (oldManager != null) { // The old manager still has this team assigned, we're gonna set it to null
+            if (oldManager.getTeam() == this) {
+                System.out.println("oldManager object id: " + oldManager.getId());
+                oldManager.setTeam(null);
+                System.out.println(oldManager.getFirst_name() + " " + oldManager.getLast_name() + " no longer has " + this.getName() + " as a team");
+                //System.out.println("Removing old manager " + oldManager.getFirst_name() + " " + oldManager.getLast_name() + " from this team.");
             }
         }
         System.out.println("---- setCoach completed ----");
@@ -136,7 +135,7 @@ public class Team extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", founded_year=" + founded_year +
                 ", stadium='" + stadium + '\'' +
-                ", coach=" + coach +
+                ", manager=" + manager +
                 ", league='" + league + '\'' +
                 '}';
     }
@@ -147,7 +146,7 @@ public class Team extends BaseEntity {
                 this.name,
                 this.founded_year,
                 this.stadium,
-                this.coach != null ? this.coach.toResponseDTO() : null, // if the coach isn't null get the coach and convert it to response DTO otherwise return null
+                this.manager != null ? this.manager.getFirst_name() + " " + this.manager.getLast_name() : null, // if the manager isn't null get the manager and convert it to response DTO otherwise return null
                 this.league
         );
     }

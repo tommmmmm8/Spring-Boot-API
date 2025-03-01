@@ -3,7 +3,7 @@ package com.tom.footballmanagement.Service;
 import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
-import com.tom.footballmanagement.Repository.CoachRepository;
+import com.tom.footballmanagement.Repository.ManagerRepository;
 import com.tom.footballmanagement.Repository.PlayerRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
 import com.tom.footballmanagement.Entity.Team;
@@ -26,13 +26,13 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
-    private final CoachRepository coachRepository;
+    private final ManagerRepository managerRepository;
 
     @Autowired
-    public TeamService(TeamRepository teamRepository, PlayerRepository playerRepository, CoachRepository coachRepository) {
+    public TeamService(TeamRepository teamRepository, PlayerRepository playerRepository, ManagerRepository managerRepository) {
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
-        this.coachRepository = coachRepository;
+        this.managerRepository = managerRepository;
     }
 
     public boolean teamExists(Long team_id) {
@@ -77,8 +77,8 @@ public class TeamService {
                     Map<?,?> map = (Map<?, ?>) value;
                     if (map != null) {
                         if (map.containsKey("id") && map.get("id") != null) {
-                            team.setCoach(coachRepository.findById(Long.valueOf((Integer) map.get("id")))
-                                    .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach with id: " + map.get("id") + " not found")));
+                            team.setCoach(managerRepository.findById(Long.valueOf((Integer) map.get("id")))
+                                    .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager with id: " + map.get("id") + " not found")));
                         }
                     } else
                         team.setCoach(null);
