@@ -21,7 +21,7 @@ public class Team extends BaseEntity {
     private String stadium;
 
     @OneToOne
-    @JoinColumn(name = "coach_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_team_id_fk"))
+    @JoinColumn(name = "manager_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_team_id_fk"))
     @JsonManagedReference // Parent/owner side
     private Manager manager;
 
@@ -53,7 +53,7 @@ public class Team extends BaseEntity {
         return id;
     }
 
-    public void setId(Long id) {
+    private void setId(Long id) {
         this.id = id;
     }
 
