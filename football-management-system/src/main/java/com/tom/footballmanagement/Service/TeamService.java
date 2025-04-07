@@ -73,7 +73,7 @@ public class TeamService {
             Field field = ReflectionUtils.findField(Team.class, key);
             if (field != null) {
                 ReflectionUtils.makeAccessible(field);
-                if (key.equals("coach")) {
+                if (key.equals("manager")) {
                     Map<?,?> map = (Map<?, ?>) value;
                     if (map != null) {
                         if (map.containsKey("id") && map.get("id") != null) {

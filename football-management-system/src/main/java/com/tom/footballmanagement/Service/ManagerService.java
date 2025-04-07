@@ -82,7 +82,7 @@ public class ManagerService {
         Manager manager = managerRepository.findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found"));
 
-        teamRepository.findBycoach(manager).forEach(team -> team.setCoach(null));
+        teamRepository.findByManager(manager).forEach(team -> team.setCoach(null));
 
         managerRepository.deleteById(id);
         return ResponseEntity.ok(String.format("Manager with id: %d was deleted", id));
