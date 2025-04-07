@@ -9,7 +9,5 @@ import java.util.List;
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Team findByName(String name);
 
-    List<Team> findAllByCoach(Manager manager);
-
-    List<Team> findBycoach(Manager manager);
+    List<Team> findByManager(Manager manager);
 }
