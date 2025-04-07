@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Service;
 
+import com.tom.footballmanagement.DTO.CreateTeamDTO;
 import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
@@ -58,11 +59,8 @@ public class TeamService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found");
     }
 
-    public TeamResponseDTO addTeam(Team team) {
-        if (team.getId() != null)
-            if (teamExists(team.getId()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team: " + team.getName() + " already exists");
-        return teamRepository.save(team).toResponseDTO();
+    public TeamResponseDTO addTeam(CreateTeamDTO createTeamDTO) {
+        return teamRepository.save(createTeamDTO.toTeam()).toResponseDTO();
     }
 
     public TeamResponseDTO modifyTeam(Long team_id, Map<String, Object> updates) {
@@ -77,11 +75,11 @@ public class TeamService {
                     Map<?,?> map = (Map<?, ?>) value;
                     if (map != null) {
                         if (map.containsKey("id") && map.get("id") != null) {
-                            team.setCoach(managerRepository.findById(Long.valueOf((Integer) map.get("id")))
+                            team.setManager(managerRepository.findById(Long.valueOf((Integer) map.get("id")))
                                     .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager with id: " + map.get("id") + " not found")));
                         }
                     } else
-                        team.setCoach(null);
+                        team.setManager(null);
                 } else
                     ReflectionUtils.setField(field, team, value);
             } else {

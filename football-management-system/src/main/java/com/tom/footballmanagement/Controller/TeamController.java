@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Controller;
 
+import com.tom.footballmanagement.DTO.CreateTeamDTO;
 import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import com.tom.footballmanagement.Entity.Team;
@@ -39,8 +40,8 @@ public class TeamController {
 
     // Add a team
     @PostMapping
-    public TeamResponseDTO addTeam(@RequestBody Team team) {
-        return teamService.addTeam(team);
+    public TeamResponseDTO addTeam(@RequestBody CreateTeamDTO createTeamDTO) {
+        return teamService.addTeam(createTeamDTO);
     }
 
     // Modify a team
