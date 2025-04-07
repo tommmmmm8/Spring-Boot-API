@@ -100,7 +100,7 @@ public class Manager extends BaseEntity {
             return;
 
         if (team != null) {
-            if (team.getCoach() != null && team.getCoach() != this) {
+            if (team.getManager() != null && team.getManager() != this) {
                 System.out.println("The team already has a coach");
                 return;
             }
@@ -111,15 +111,15 @@ public class Manager extends BaseEntity {
         this.team = team;
         System.out.println("New team assigned to coach.");
 
-        if (this.team != null && this.team.getCoach() != this) { // If the new team is not null and the new team's coach is not this coach yet
-            this.team.setCoach(this);
+        if (this.team != null && this.team.getManager() != this) { // If the new team is not null and the new team's coach is not this coach yet
+            this.team.setManager(this);
             System.out.println("Updated new team's coach reference.");
         }
 
         if (oldTeam != null) { // If the old team still has this coach assigned, we're gonna set it to null
-            if (oldTeam.getCoach() == this) {
+            if (oldTeam.getManager() == this) {
                 System.out.println("oldTeam object id: " + oldTeam.getId());
-                oldTeam.setCoach(null);
+                oldTeam.setManager(null);
                 System.out.println(oldTeam.getName() + " no longer has " + this.getFirst_name() + " " + this.getLast_name() + " as a coach");
                 //System.out.println("Removing old coach " + this.getFirst_name() + " " + this.getLast_name() + " from this team.");
             }
