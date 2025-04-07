@@ -21,7 +21,7 @@ public class Team extends BaseEntity {
     private String stadium;
 
     @OneToOne
-    @JoinColumn(name = "manager_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_team_id_fk"))
+    @JoinColumn(name = "manager_id", referencedColumnName = "id", unique = true, foreignKey = @ForeignKey(name = "teams_manager_id_fk"))
     @JsonManagedReference // Parent/owner side
     private Manager manager;
 
@@ -46,7 +46,7 @@ public class Team extends BaseEntity {
     }
 
     public Team(Team that) {
-        this(that.getId(), that.getName(), that.getFounded_year(), that.getStadium(), that.getCoach(), that.getLeague());
+        this(that.getId(), that.getName(), that.getFounded_year(), that.getStadium(), that.getManager(), that.getLeague());
     }
 
     public Long getId() {
@@ -81,11 +81,11 @@ public class Team extends BaseEntity {
         this.stadium = stadium;
     }
 
-    public Manager getCoach() {
+    public Manager getManager() {
         return manager;
     }
 
-    public void setCoach(Manager manager) {
+    public void setManager(Manager manager) {
         System.out.println("---- setCoach called ----");
         System.out.println("Current manager: " + (this.manager != null ? this.manager.getId() : "null"));
         System.out.println("New manager: " + (manager != null ? manager.getId() : "null"));
