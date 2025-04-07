@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Controller;
 
+import com.tom.footballmanagement.DTO.CreateManagerDTO;
 import com.tom.footballmanagement.DTO.ManagerResponseDTO;
 import com.tom.footballmanagement.Entity.Manager;
 import com.tom.footballmanagement.Service.ManagerService;
@@ -31,8 +32,8 @@ public class ManagerController {
     }
 
     @PostMapping("/managers")
-    public ManagerResponseDTO addCoach(@RequestBody Manager manager) {
-        return managerService.addCoach(manager);
+    public ManagerResponseDTO addCoach(@RequestBody CreateManagerDTO createManagerDTO) {
+        return managerService.addCoach(createManagerDTO);
     }
 
     @PatchMapping("/managers/{id}")

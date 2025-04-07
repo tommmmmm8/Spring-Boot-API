@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Service;
 
+import com.tom.footballmanagement.DTO.CreateManagerDTO;
 import com.tom.footballmanagement.DTO.ManagerResponseDTO;
 import com.tom.footballmanagement.Entity.Manager;
 import com.tom.footballmanagement.Repository.ManagerRepository;
@@ -41,12 +42,8 @@ public class ManagerService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found");
     }
 
-    public ManagerResponseDTO addCoach(Manager manager) {
-        if (manager.getId() != null)
-            if (managerRepository.existsById(manager.getId()))
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Manager with id: " + manager.getId() + " already exists");
-
-        return managerRepository.save(manager).toResponseDTO();
+    public ManagerResponseDTO addCoach(CreateManagerDTO createManagerDTO) {
+        return managerRepository.save(createManagerDTO.toManager()).toResponseDTO();
     }
 
     public ManagerResponseDTO modifyCoach(Long id, Map<String, Object> updates) {
@@ -82,7 +79,7 @@ public class ManagerService {
         Manager manager = managerRepository.findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found"));
 
-        teamRepository.findByManager(manager).forEach(team -> team.setCoach(null));
+        teamRepository.findByManager(manager).forEach(team -> team.setManager(null));
 
         managerRepository.deleteById(id);
         return ResponseEntity.ok(String.format("Manager with id: %d was deleted", id));
