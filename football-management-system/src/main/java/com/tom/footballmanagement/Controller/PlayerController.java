@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Controller;
 
+import com.tom.footballmanagement.DTO.CreatePlayerDTO;
 import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Service.PlayerService;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/players")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -21,37 +23,37 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/players")
+    @GetMapping
     public List<PlayerResponseDTO> getAllPlayers() {
         return playerService.getAllPlayers();
     }
 
     // Get a player by id
-    @GetMapping("/players/{id}")
+    @GetMapping("/{id}")
     public PlayerResponseDTO getPlayer(@PathVariable Long id) {
         return playerService.getPlayer(id);
     }
 
     // Add a player
-    @PostMapping("/players")
-    public PlayerResponseDTO addPlayer(@RequestBody Player player) {
-        return playerService.addPlayer(player);
+    @PostMapping
+    public PlayerResponseDTO addPlayer(@RequestBody CreatePlayerDTO createPlayerDTO) {
+        return playerService.addPlayer(createPlayerDTO);
     }
 
     // Add mbappe
-    @PostMapping("/players/mbappe")
+    @PostMapping("/mbappe")
     public PlayerResponseDTO addMbappe() {
         return playerService.addMbappe();
     }
 
     // Modify a specific player
-    @PatchMapping("/players/{id}")
+    @PatchMapping("/{id}")
     public PlayerResponseDTO modifyPlayer(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return playerService.modifyPlayer(id, updates);
     }
 
     // Delete a specific player
-    @DeleteMapping("/players/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> removePlayer(@PathVariable Long id) {
         return playerService.removePlayer(id);
     }

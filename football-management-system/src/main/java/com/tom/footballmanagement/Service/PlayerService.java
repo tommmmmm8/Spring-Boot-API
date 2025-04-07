@@ -1,5 +1,6 @@
 package com.tom.footballmanagement.Service;
 
+import com.tom.footballmanagement.DTO.CreatePlayerDTO;
 import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Repository.PlayerRepository;
@@ -59,25 +60,19 @@ public class PlayerService {
         return playerRepository.save(player).toResponseDTO();
     }
 
-    public PlayerResponseDTO addPlayer(Player player){
-        // checking if the id was specified in the json but already exists in the table
-        if (player.getId() != null)
-            if (playerRepository.existsById(player.getId()))
-                throw new IllegalStateException("Player with id: " + player.getId() + " already exists");
-
-        System.out.println("Player was saved");
-        return playerRepository.save(player).toResponseDTO();
+    public PlayerResponseDTO addPlayer(CreatePlayerDTO createPlayerDTO){
+        return playerRepository.save(createPlayerDTO.toPlayer()).toResponseDTO();
     }
 
     public PlayerResponseDTO modifyPlayer(Long id, Map<String, Object> updates) {
         Player playerToModify = playerRepository.findById(id)
             .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
 
-
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Player.class, key);
             if (field != null) {
                 ReflectionUtils.makeAccessible(field);
+                // team needs special handling
                 if (key.equals("team")) {
                     Map<?,?> map =  (Map<?,?>) value;
                     if (map != null) {
