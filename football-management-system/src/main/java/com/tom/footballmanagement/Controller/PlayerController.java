@@ -5,6 +5,7 @@ import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Service.PlayerService;
 import com.tom.footballmanagement.Service.TeamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,8 @@ public class PlayerController {
 
     // Add a player
     @PostMapping
-    public PlayerResponseDTO addPlayer(@RequestBody CreatePlayerDTO createPlayerDTO) {
-        return playerService.addPlayer(createPlayerDTO);
+    public PlayerResponseDTO addPlayer(@RequestBody @Valid CreatePlayerDTO dto) {
+        return playerService.addPlayer(dto);
     }
 
     // Add mbappe
