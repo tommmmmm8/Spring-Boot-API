@@ -4,6 +4,7 @@ import com.tom.footballmanagement.DTO.CreateManagerDTO;
 import com.tom.footballmanagement.DTO.ManagerResponseDTO;
 import com.tom.footballmanagement.Entity.Manager;
 import com.tom.footballmanagement.Service.ManagerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,8 @@ public class ManagerController {
     }
 
     @PostMapping("/managers")
-    public ManagerResponseDTO addCoach(@RequestBody CreateManagerDTO createManagerDTO) {
-        return managerService.addCoach(createManagerDTO);
+    public ManagerResponseDTO addCoach(@RequestBody @Valid CreateManagerDTO dto) {
+        return managerService.addCoach(dto);
     }
 
     @PatchMapping("/managers/{id}")
