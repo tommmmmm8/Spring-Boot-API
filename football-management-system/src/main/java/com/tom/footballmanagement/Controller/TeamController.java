@@ -5,6 +5,7 @@ import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.DTO.TeamResponseDTO;
 import com.tom.footballmanagement.Entity.Team;
 import com.tom.footballmanagement.Service.TeamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +41,8 @@ public class TeamController {
 
     // Add a team
     @PostMapping
-    public TeamResponseDTO addTeam(@RequestBody CreateTeamDTO createTeamDTO) {
-        return teamService.addTeam(createTeamDTO);
+    public TeamResponseDTO addTeam(@RequestBody @Valid CreateTeamDTO dto) {
+        return teamService.addTeam(dto);
     }
 
     // Modify a team
