@@ -20,7 +20,7 @@ public class Player extends BaseEntity {
     @Column(nullable = false)
     private String last_name;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate date_of_birth;
 
     @Column(nullable = false)
