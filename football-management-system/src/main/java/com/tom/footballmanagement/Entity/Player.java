@@ -59,6 +59,17 @@ public class Player extends BaseEntity {
 
     }
 
+    public Player(Player player) {
+        this.id = player.getId();
+        this.first_name = player.getFirst_name();
+        this.last_name = player.getLast_name();
+        this.date_of_birth = player.getDate_of_birth();
+        this.nationality = player.getNationality();
+        this.position = player.getPosition();
+        this.team = player.getTeam();
+        this.contract_end_date = player.getContract_end_date();
+    }
+
     public Long getId() {
         return id;
     }
