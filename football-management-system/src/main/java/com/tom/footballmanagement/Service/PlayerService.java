@@ -5,6 +5,7 @@ import com.tom.footballmanagement.DTO.PlayerResponseDTO;
 import com.tom.footballmanagement.Entity.Player;
 import com.tom.footballmanagement.Repository.PlayerRepository;
 import com.tom.footballmanagement.Repository.TeamRepository;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,16 +35,24 @@ public class PlayerService {
         this.teamRepository = teamRepository;
     }
 
+    private boolean validateId(Long id) {
+        if (id == null)
+            throw new IllegalArgumentException("Id cannot be null");
+        if (id < 0)
+            throw new IllegalArgumentException("Id cannot be negative");
+        return true;
+    }
+
     public List<PlayerResponseDTO> getAllPlayers() {
         return playerRepository.findAll().stream().map(Player::toResponseDTO).toList();
     }
 
     public PlayerResponseDTO getPlayer(Long id) {
-        Optional<Player> player = playerRepository.findById(id);
-        if (player.isPresent())
-            return player.get().toResponseDTO();
-        else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
+        validateId(id);
+
+        return playerRepository.findById(id)
+                .map(Player::toResponseDTO)
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
     }
 
     public PlayerResponseDTO addMbappe() {
@@ -61,10 +70,14 @@ public class PlayerService {
     }
 
     public PlayerResponseDTO addPlayer(CreatePlayerDTO createPlayerDTO){
+        if (createPlayerDTO == null)
+            throw new IllegalArgumentException("Player cannot be null");
+
         return playerRepository.save(createPlayerDTO.toPlayer()).toResponseDTO();
     }
 
     public PlayerResponseDTO modifyPlayer(Long id, Map<String, Object> updates) {
+        validateId(id);
         Player playerToModify = playerRepository.findById(id)
             .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found"));
 
@@ -76,9 +89,12 @@ public class PlayerService {
                 if (key.equals("team")) {
                     Map<?,?> map =  (Map<?,?>) value;
                     if (map != null) {
-                        if (map.containsKey("id") && map.get("id") != null)
-                            ReflectionUtils.setField(field, playerToModify, teamRepository.findById(Long.valueOf((Integer) map.get("id")))
+                        if (map.containsKey("id") && map.get("id") != null) {
+                            Long teamId = ((Number) map.get("id")).longValue();
+                            validateId(teamId);
+                            ReflectionUtils.setField(field, playerToModify, teamRepository.findById(teamId)
                                     .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with id: " + map.get("id") + " doesn't exist")));
+                        }
                         else if (map.containsKey("name") && map.get("name") != null)
                             ReflectionUtils.setField(field, playerToModify, teamRepository.findByName(map.get("name").toString()));
                     } else
@@ -95,10 +111,15 @@ public class PlayerService {
     }
 
     public ResponseEntity<String> removePlayer(Long id) {
-        if (!playerRepository.existsById(id))
+        if (playerRepository.existsById(id) == false)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
 
         playerRepository.deleteById(id);
-        return ResponseEntity.ok(String.format("Player with id: %d was deleted", id));
+        if (playerRepository.existsById(id) == false)
+            return ResponseEntity.ok(String.format("Player with id: %d was deleted", id));
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(String.format("Player with id: %d was not deleted", id));
     }
+
+
 }
