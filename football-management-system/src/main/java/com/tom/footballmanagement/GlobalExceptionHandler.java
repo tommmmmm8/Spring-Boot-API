@@ -2,15 +2,12 @@ package com.tom.footballmanagement;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +18,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public Map<String, Object> handleIllegalArgument(
             IllegalArgumentException ex, HttpServletRequest request) {
-        //return ResponseEntity.badRequest().body(ex.getMessage());
 
         // Using LinkedHashMap to guarantee field order
         Map<String, Object> body = new LinkedHashMap<>();
