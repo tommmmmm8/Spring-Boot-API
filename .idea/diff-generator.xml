@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DiffGenerationConfig">
+  <component name="DiffGenerationConfig" isInitGenerateDdl="true">
+    <option name="initGenerateDdl" value="true" />
     <option name="sourceModelValue" value="football-management-system:entityManagerFactory" />
+    <option name="targetDbValue" value="66e64b1e-fced-440c-9be6-5811f2df8c91" />
   </component>
 </project>
